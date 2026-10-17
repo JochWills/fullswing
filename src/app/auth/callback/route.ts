@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { isAdminEmail } from "@/lib/env";
+import { publicUrl } from "@/lib/url";
 
 export const dynamic = "force-dynamic";
 
@@ -12,7 +13,7 @@ export async function GET(req: NextRequest) {
   const tokenHash = req.nextUrl.searchParams.get("token_hash");
   const type = req.nextUrl.searchParams.get("type");
   const done = (email?: string | null) =>
-    NextResponse.redirect(new URL(explicitNext ?? (isAdminEmail(email) ? "/admin" : "/account"), req.url));
+    NextResponse.redirect(publicUrl(req, explicitNext ?? (isAdminEmail(email) ? "/admin" : "/account")));
 
   if (code) {
     const supabase = await createClient();
@@ -24,5 +25,5 @@ export async function GET(req: NextRequest) {
     const { data, error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type });
     if (!error) return done(data.user?.email);
   }
-  return NextResponse.redirect(new URL("/login?error=link", req.url));
+  return NextResponse.redirect(publicUrl(req, "/login?error=link"));
 }
