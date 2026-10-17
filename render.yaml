@@ -30,7 +30,15 @@ services:
         sync: false
       - key: PAYMENTS_TEST_MODE   # "true" until Paystack is set up, then "false"
         sync: false
-      - key: RESEND_API_KEY
+      - key: SMTP_HOST            # smtp.gmail.com
+        sync: false
+      - key: SMTP_PORT            # 465
+        sync: false
+      - key: SMTP_USER            # the Gmail address
+        sync: false
+      - key: SMTP_PASS            # Gmail app password
+        sync: false
+      - key: RESEND_API_KEY       # optional alternative to SMTP (needs a domain)
         sync: false
       - key: EMAIL_FROM
         sync: false

@@ -1,14 +1,34 @@
 import "server-only";
+import nodemailer, { type Transporter } from "nodemailer";
 import { siteUrl } from "./env";
 import { fmtDate, fmtTime, rand } from "./format";
 import { addToGoogleCalendarLink } from "./google";
 import type { Booking, Settings } from "./types";
 
+let smtp: Transporter | null = null;
+
+/**
+ * Sends via SMTP when SMTP_HOST is set (e.g. a Gmail account with an app password – no domain needed),
+ * otherwise via Resend when RESEND_API_KEY is set, otherwise just logs.
+ */
 async function send(to: string, subject: string, html: string) {
-  const key = process.env.RESEND_API_KEY;
+  const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, RESEND_API_KEY: key } = process.env;
+
+  if (SMTP_HOST && SMTP_USER && SMTP_PASS) {
+    const port = Number(SMTP_PORT || 465);
+    smtp ??= nodemailer.createTransport({ host: SMTP_HOST, port, secure: port === 465, auth: { user: SMTP_USER, pass: SMTP_PASS } });
+    try {
+      // Gmail only sends as the signed-in address, so default the sender to it.
+      await smtp.sendMail({ from: process.env.EMAIL_FROM || `"Full-Swing Tennis Academy" <${SMTP_USER}>`, to, subject, html });
+    } catch (e) {
+      console.error("Email send error (SMTP)", e);
+    }
+    return;
+  }
+
   const from = process.env.EMAIL_FROM || "Full-Swing Tennis Academy <onboarding@resend.dev>";
   if (!key) {
-    console.log(`[email skipped - no RESEND_API_KEY] to=${to} subject="${subject}"`);
+    console.log(`[email skipped - no SMTP or RESEND_API_KEY] to=${to} subject="${subject}"`);
     return;
   }
   try {
