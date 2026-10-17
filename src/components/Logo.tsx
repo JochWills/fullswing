@@ -1,8 +1,8 @@
 import Image from "next/image";
 
 /**
- * The academy logo, vector-traced from public/logo-original.png (artwork unchanged).
- * `variant="white"` is for dark backgrounds; the full-colour version reads best on white.
+ * The academy logo (from logo.png in the project root, background removed).
+ * `variant="white"` is for dark backgrounds.
  */
 export default function Logo({
   variant = "color",
@@ -15,10 +15,10 @@ export default function Logo({
 }) {
   return (
     <Image
-      src={variant === "white" ? "/logo-white.svg" : "/logo.svg"}
+      src={variant === "white" ? "/logo-full-white.png" : "/logo-full.png"}
       alt="Full-Swing Tennis Academy"
-      width={677}
-      height={430}
+      width={886}
+      height={240}
       className={className}
       priority={priority}
       unoptimized

@@ -7,7 +7,7 @@ import NavProgress from "@/components/NavProgress";
 
 export const metadata: Metadata = {
   title: { default: "Full-Swing Tennis Academy | Book a lesson", template: "%s | Full-Swing Tennis Academy" },
-  description: "Book private tennis lessons and group sessions at St Francis Bay Tennis Court.",
+  description: "Book private tennis lessons and group sessions at St Francis Bay Tennis Club.",
 };
 
 export const dynamic = "force-dynamic";

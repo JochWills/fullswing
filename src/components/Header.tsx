@@ -17,29 +17,29 @@ export default async function Header() {
   const profile = user && <ProfileMenu email={user.email ?? ""} admin={admin} />;
 
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/85 backdrop-blur-md">
-      <div className="container-x flex h-[72px] items-center justify-between gap-4 sm:h-24">
+    <header className="sticky top-0 z-40 bg-white/90 shadow-[0_1px_0_rgb(15_23_42/0.04)] backdrop-blur-md">
+      <div className="container-wide flex h-[68px] items-center justify-between gap-4 sm:h-[86px]">
         <Link href="/" className="shrink-0 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand" aria-label="Full-Swing Tennis Academy home">
-          <Logo className="h-14 w-auto sm:h-[76px]" priority />
+          <Logo className="h-10 w-auto min-[400px]:h-11 sm:h-[60px]" priority />
         </Link>
 
-        <nav className="hidden items-center gap-1 text-sm font-semibold md:flex">
+        <nav className="hidden items-center gap-2 whitespace-nowrap text-[15px] font-medium lg:flex xl:gap-5">
           {links.map(([href, label]) => (
             <Link key={href} href={href} className="nav-link">
               {label}
             </Link>
           ))}
           {!admin && (
-            <Link href="/book" className="btn-primary btn-sm ml-2">
-              Book now
+            <Link href="/book" className="btn-primary ml-3 px-7 py-3 text-[15px]">
+              Book now <ArrowRight />
             </Link>
           )}
           {profile && <div className="ml-2">{profile}</div>}
         </nav>
 
-        <div className="flex items-center gap-2 md:hidden">
+        <div className="flex items-center gap-2 lg:hidden">
           {!admin && (
-            <Link href="/book" className="btn-primary btn-sm">
+            <Link href="/book" className="btn-primary btn-sm hidden min-[380px]:inline-flex">
               Book now
             </Link>
           )}
@@ -67,5 +67,13 @@ export default async function Header() {
         </div>
       </div>
     </header>
+  );
+}
+
+function ArrowRight() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M5 12h14M13 6l6 6-6 6" />
+    </svg>
   );
 }

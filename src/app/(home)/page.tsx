@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { activeLessonTypes, getSettings, scheduledGroupSessions, upcomingGroupSessions } from "@/lib/data";
 import { rand } from "@/lib/format";
 import GroupSessionCard from "@/components/GroupSessionCard";
-import Logo from "@/components/Logo";
+import Image from "next/image";
 import { CourtLines, TennisBall } from "@/components/Court";
 import { CardSkeleton } from "@/components/ui/Skeleton";
 
@@ -15,77 +15,117 @@ export default async function Home() {
   return (
     <>
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-brand-50 via-white to-slate-50">
-        <div className="pointer-events-none absolute -left-40 top-20 h-96 w-96 rounded-full bg-brand-200/40 blur-3xl" aria-hidden />
-        <div className="pointer-events-none absolute -right-20 -top-20 h-80 w-80 rounded-full bg-ball/20 blur-3xl" aria-hidden />
-        <div className="container-x relative grid items-center gap-12 pb-20 pt-12 sm:pt-16 lg:grid-cols-[1.1fr_1fr] lg:gap-16 lg:pb-28 lg:pt-20">
-          <div>
-            <p className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-sm font-semibold text-slate-700 shadow-sm">
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-ball opacity-60" />
-                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-ball" />
-              </span>
+      <section className="relative overflow-hidden bg-[linear-gradient(180deg,#EEF8FE_0%,#F7FBFE_55%,#F8FAFC_100%)]">
+        {/* Court photo, cut on a diagonal (large screens) */}
+        <div
+          className="pointer-events-none absolute inset-y-0 left-1/2 right-0 hidden lg:block xl:left-[45%] min-[1600px]:left-1/2"
+          style={{ clipPath: "polygon(44% 0, 100% 0, 100% 100%, 0 100%)" }}
+          aria-hidden
+        >
+          <Image src="/hero/venue-blur.jpg" alt="" fill priority sizes="55vw" className="scale-110 object-cover object-[60%_55%]" />
+          <VenueTint />
+        </div>
+
+        <div className="container-wide relative grid items-center gap-10 pb-12 pt-10 sm:pt-14 lg:min-h-[640px] lg:grid-cols-[1.08fr_1fr] lg:gap-8 lg:pb-16 lg:pt-[72px]">
+          <div className="min-w-0">
+            <p className="inline-flex items-center gap-2 rounded-full border border-ball-100 bg-ball-50 py-2 pl-3 pr-4 text-[15px] font-medium text-slate-800">
+              <PinIcon />
               {settings.venue_name}
             </p>
-            <h1 className="h-display mt-6 text-[3.6rem] sm:text-7xl lg:text-[5.5rem]">
+            <h1 className="mt-6 font-heavy text-[min(4.5rem,calc((100vw-2rem)/7))] font-black uppercase leading-[0.96] tracking-[-0.035em] text-ink whitespace-nowrap sm:text-7xl lg:text-[4.3rem] xl:text-[5.45rem]">
               Find your
               <br />
-              <span className="relative inline-block text-brand">
-                full swing.
-                <svg viewBox="0 0 300 18" className="absolute -bottom-2 left-0 w-full text-ball" preserveAspectRatio="none" aria-hidden>
-                  <path d="M3 13C70 4 180 2 297 9" fill="none" stroke="currentColor" strokeWidth="6" strokeLinecap="round" />
+              <span className="relative inline-block bg-gradient-to-r from-[#0790DA] to-[#1499E3] bg-clip-text pb-1 text-transparent">
+                Full swing.
+                <svg viewBox="0 0 660 26" className="absolute -bottom-2.5 left-0 w-[96%]" preserveAspectRatio="none" aria-hidden>
+                  <defs>
+                    <linearGradient id="swoosh" x1="0" x2="1">
+                      <stop offset="0" stopColor="#5DBB07" />
+                      <stop offset="1" stopColor="#C5E005" />
+                    </linearGradient>
+                  </defs>
+                  <path d="M3 19C150 9 380 2 652 9c6 .2 6 7 0 7C430 13 190 17 12 25c-9 .4-12-5-9-6z" fill="url(#swoosh)" />
                 </svg>
               </span>
             </h1>
-            <p className="mt-7 max-w-lg text-lg leading-relaxed text-slate-600">
+            <p className="mt-8 max-w-[31rem] text-lg leading-[1.6] text-slate-600 sm:text-[1.2rem]">
               Private coaching and group sessions for juniors and adults. Pick a time that suits you, pay securely, and
               you&apos;re on court.
             </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link href="/book" className="btn-primary btn-lg">
-                Book a private lesson <Arrow />
+            <div className="mt-8 flex flex-col gap-3 whitespace-nowrap sm:flex-row sm:gap-4 xl:gap-6">
+              <Link href="/book" className="btn-primary px-6 xl:px-8 py-[1.15rem] text-base font-bold">
+                <HeroCalendar /> <span className="ml-2">Book a private lesson</span> <Arrow />
               </Link>
-              <Link href="/groups" className="btn-ghost btn-lg">
-                Join a group session
+              <Link href="/groups" className="btn border border-slate-200 bg-white px-6 xl:px-8 py-[1.15rem] text-base font-bold text-ink shadow-sm hover:border-slate-300 hover:shadow-soft">
+                Join a group session <Arrow />
               </Link>
             </div>
-            <ul className="mt-9 flex flex-wrap gap-x-6 gap-y-3 text-sm font-semibold text-slate-600">
+            <ul className="mt-10 grid grid-cols-3 gap-3 sm:flex sm:gap-8 lg:gap-6 xl:gap-8">
               {[
-                "Juniors & adults",
-                fromPrice !== null ? `Lessons from ${rand(fromPrice)}` : "All levels welcome",
-                `Free cancellation up to ${settings.cancellation_hours}h`,
-              ].map((t) => (
-                <li key={t} className="flex items-center gap-2">
-                  <Check /> {t}
+                [<PersonIcon key="i" />, "Juniors & adults", "Private & group"],
+                [<BallIcon key="i" small />, fromPrice !== null ? `From ${rand(fromPrice)}` : "All levels", fromPrice !== null ? "per lesson" : "welcome"],
+                [<ClockIcon key="i" />, "Free cancellation", `up to ${settings.cancellation_hours}h before`],
+              ].map(([icon, title, sub], i) => (
+                <li key={i} className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3 lg:flex-col lg:items-start lg:gap-2 xl:flex-row xl:items-center xl:gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-ball-50 text-ball-500 ring-1 ring-ball-100">
+                    {icon}
+                  </span>
+                  <span className="min-w-0 leading-tight">
+                    <span className="block text-sm font-semibold text-ink sm:whitespace-nowrap">{title}</span>
+                    <span className="mt-0.5 block text-[13px] text-slate-500 sm:whitespace-nowrap">{sub}</span>
+                  </span>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Logo showcase on a court */}
-          <div className="relative mx-auto w-full max-w-md lg:max-w-none">
-            <div className="relative aspect-[5/4] overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-brand-400 via-brand-500 to-brand-700 shadow-lift">
-              <CourtLines className="absolute left-1/2 top-1/2 w-[130%] -translate-x-1/2 -translate-y-1/2 rotate-90 text-white/25" strokeWidth={5} />
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.25),transparent_55%)]" />
-              <div className="absolute inset-0 flex items-center justify-center p-6 sm:p-10">
-                <div className="w-full rounded-[2rem] bg-white px-6 py-7 shadow-lift ring-1 ring-black/5 sm:px-9 sm:py-10">
-                  <Logo className="mx-auto h-auto w-full" priority />
+          {/* Logo card on court */}
+          <div className="relative -mx-4 overflow-hidden px-6 py-12 sm:mx-0 sm:rounded-[2rem] sm:px-10 lg:overflow-visible lg:p-0">
+            <div className="absolute inset-0 overflow-hidden lg:hidden" aria-hidden>
+              <Image src="/hero/venue-blur.jpg" alt="" fill sizes="100vw" className="scale-110 object-cover" />
+              <VenueTint />
+            </div>
+            <div className="relative mx-auto w-full max-w-[30rem] lg:ml-auto lg:mr-6 lg:translate-y-1 xl:mr-10">
+              <div className="relative rounded-[1.9rem] bg-white p-2 shadow-[0_30px_60px_-24px_rgb(7_27_49/0.45)]">
+                <div className="relative overflow-hidden rounded-[1.45rem] px-[9%] pb-[10%] pt-[8.5%]">
+                  <Image src="/hero/court-inner.jpg" alt="" fill sizes="(min-width: 1024px) 34rem, 100vw" className="object-cover" aria-hidden />
+                  <div className="relative aspect-square overflow-hidden rounded-[1.25rem] bg-white shadow-[0_18px_40px_-18px_rgb(7_27_49/0.5)] ring-4 ring-white">
+                    <Image
+                      src="/hero/on-court.jpg"
+                      alt="Head Coach William Wickens on court at St Francis Bay"
+                      fill
+                      priority
+                      sizes="(min-width: 1280px) 26rem, (min-width: 1024px) 22rem, 90vw"
+                      className="object-cover"
+                    />
+                    <span className="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-ink shadow-sm backdrop-blur sm:left-4 sm:top-4">
+                      Head Coach · William Wickens
+                    </span>
+                  </div>
                 </div>
               </div>
+              <Image
+                src="/hero/ball.png"
+                alt=""
+                width={128}
+                height={128}
+                className="absolute -right-3 -top-7 w-20 drop-shadow-[0_14px_14px_rgb(7_27_49/0.3)] sm:-right-5 sm:-top-9 sm:w-[6.5rem]"
+                aria-hidden
+              />
+              {fromPrice !== null && (
+                <div className="absolute -bottom-6 left-[11%] rounded-[1.15rem] bg-white px-5 pb-3.5 pt-3.5 shadow-[0_18px_40px_-16px_rgb(7_27_49/0.45)] sm:-bottom-7 sm:px-6">
+                  <p className="text-[11px] font-medium uppercase tracking-[0.1em] text-slate-500">Private lessons from</p>
+                  <p className="mt-1 font-heavy text-[1.85rem] font-extrabold leading-none tracking-tight text-ink">{rand(fromPrice)}</p>
+                  <span className="mt-1.5 block h-[3px] w-14 rounded-full bg-ball-400" />
+                </div>
+              )}
             </div>
-            <TennisBall className="absolute -right-3 -top-5 h-14 w-14 animate-bounce-ball drop-shadow-lg sm:-right-5 sm:h-16 sm:w-16" />
-            {fromPrice !== null && (
-              <div className="absolute -bottom-6 left-6 rounded-2xl border border-slate-200 bg-white px-5 py-3 shadow-lift sm:left-10">
-                <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">Private lessons from</p>
-                <p className="h-display text-3xl">{rand(fromPrice)}</p>
-              </div>
-            )}
           </div>
         </div>
       </section>
 
       {/* Two ways to play */}
-      <section className="container-x">
+      <section className="container-wide">
         <SectionTitle eyebrow="Two ways to play" title="Choose your game" />
         <div className="grid gap-6 md:grid-cols-2">
           <Link href="/book" className="card card-hover group flex flex-col p-7 sm:p-8">
@@ -134,8 +174,42 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* Coach */}
+      <section className="container-wide mt-24">
+        <div className="grid items-center gap-10 lg:grid-cols-[0.85fr_1fr] lg:gap-16">
+          <div className="relative mx-auto w-full max-w-md lg:mx-0 lg:max-w-[30rem]">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] shadow-lift ring-1 ring-black/5">
+              <Image
+                src="/hero/coach-william.jpg"
+                alt="Head Coach William Wickens on court at St Francis Bay"
+                fill
+                sizes="(min-width: 1024px) 28rem, 90vw"
+                className="object-cover"
+              />
+            </div>
+          </div>
+
+          <div>
+            <SectionTitle eyebrow="Meet your coach" title="William Wickens" />
+            <p className="-mt-4 mb-6 text-sm font-bold uppercase tracking-[0.14em] text-brand-600">Head Coach</p>
+            <p className="max-w-xl text-lg leading-relaxed text-slate-600">
+              William leads the coaching at {settings.venue_name}, with private lessons and group sessions for juniors and
+              adults. Book a one-on-one lesson to work on your game, or join a group session.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link href="/book" className="btn-primary btn-lg">
+                Book a lesson with William <Arrow />
+              </Link>
+              <Link href="/groups" className="btn-ghost btn-lg">
+                See group sessions
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {sessions.length > 0 && (
-        <section className="container-x mt-24">
+        <section className="container-wide mt-24">
           <div className="flex items-end justify-between gap-4">
             <SectionTitle eyebrow="Group sessions" title="Coming up" />
             <Link href="/groups" className="mb-8 hidden items-center gap-1.5 text-sm font-semibold text-brand-600 hover:gap-2.5 sm:inline-flex">
@@ -157,7 +231,7 @@ export default async function Home() {
       )}
 
       {/* How it works */}
-      <section className="container-x mt-24">
+      <section className="container-wide mt-24">
         <SectionTitle eyebrow="Simple booking" title="How it works" />
         <ol className="grid gap-6 sm:grid-cols-3">
           {[
@@ -180,7 +254,7 @@ export default async function Home() {
       </section>
 
       {/* Call to action */}
-      <section className="container-x mt-24">
+      <section className="container-wide mt-24">
         <div className="relative overflow-hidden rounded-[2.5rem] bg-ink px-6 py-14 text-center text-white sm:px-12 sm:py-16">
           <CourtLines className="pointer-events-none absolute left-1/2 top-1/2 w-[110%] -translate-x-1/2 -translate-y-1/2 text-white/[0.07]" strokeWidth={4} />
           <div className="pointer-events-none absolute -bottom-24 left-1/2 h-64 w-[36rem] -translate-x-1/2 rounded-full bg-brand/30 blur-3xl" aria-hidden />
@@ -219,8 +293,8 @@ async function ComingUp() {
 function SectionTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
   return (
     <div className="mb-8">
-      <p className="eyebrow">
-        <span className="h-1.5 w-6 rounded-full bg-brand" />
+      <p className="inline-flex items-center gap-4 text-[11px] font-semibold uppercase tracking-[0.32em] text-slate-600">
+        <span className="h-1 w-8 rounded-full bg-brand" />
         {eyebrow}
       </p>
       <h2 className="h-display mt-3 text-5xl">{title}</h2>
@@ -243,15 +317,6 @@ function Arrow() {
     <svg {...iconProps} className="h-4 w-4" strokeWidth={2.2}>
       <path d="M5 12h14M13 6l6 6-6 6" />
     </svg>
-  );
-}
-function Check() {
-  return (
-    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-ball/20 text-ball-700">
-      <svg {...iconProps} className="h-3 w-3" strokeWidth={3}>
-        <path d="M5 12l5 5 9-10" />
-      </svg>
-    </span>
   );
 }
 function RacketIcon() {
@@ -289,11 +354,52 @@ function CardIcon() {
     </svg>
   );
 }
-function BallIcon() {
+function BallIcon({ small }: { small?: boolean }) {
   return (
-    <svg {...iconProps}>
+    <svg {...iconProps} className={small ? "h-5 w-5" : iconProps.className}>
       <circle cx="12" cy="12" r="9" />
       <path d="M5.6 5.7c2.6 2.2 3.6 4.1 3.6 6.3s-1 4.1-3.6 6.3M18.4 5.7c-2.6 2.2-3.6 4.1-3.6 6.3s1 4.1 3.6 6.3" />
     </svg>
+  );
+}
+function PinIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-5 w-5 text-ball-500" aria-hidden>
+      <path fill="currentColor" d="M12 2a7.5 7.5 0 0 0-7.5 7.5c0 5.3 6.2 11.6 6.9 12.3a.9.9 0 0 0 1.2 0c.7-.7 6.9-7 6.9-12.3A7.5 7.5 0 0 0 12 2z" />
+      <circle cx="12" cy="9.5" r="2.8" fill="#fff" />
+    </svg>
+  );
+}
+function PersonIcon() {
+  return (
+    <svg {...iconProps} className="h-5 w-5">
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4.5 20.5c.8-3.8 3.7-6 7.5-6s6.7 2.2 7.5 6z" />
+    </svg>
+  );
+}
+function ClockIcon() {
+  return (
+    <svg {...iconProps} className="h-5 w-5">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v5l3 2" />
+    </svg>
+  );
+}
+function HeroCalendar() {
+  return (
+    <svg {...iconProps} className="h-6 w-6">
+      <rect x="3.5" y="5" width="17" height="15.5" rx="2.5" />
+      <path d="M3.5 10h17M8 3v4M16 3v4M8 14h.01M12 14h.01M16 14h.01M8 17.5h.01M12 17.5h.01" strokeWidth={2.4} />
+    </svg>
+  );
+}
+/** Brand-blue wash over the blurred venue photo, so the hero keeps its blue look. */
+function VenueTint() {
+  return (
+    <>
+      <div className="absolute inset-0 bg-[linear-gradient(160deg,#0B5FA0_0%,#0193DD_55%,#0A6FB4_100%)] opacity-80 mix-blend-multiply" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_25%,rgb(255_255_255/0.22),transparent_55%)]" />
+    </>
   );
 }

@@ -1,6 +1,6 @@
 # Full-Swing Tennis Academy – Bookings
 
-Calendly-style booking site for private tennis lessons and group sessions at St Francis Bay Tennis Court.
+Calendly-style booking site for private tennis lessons and group sessions at St Francis Bay Tennis Club.
 
 **Stack:** Next.js 15 (App Router) · Supabase (Postgres + magic-link auth) · Paystack · Google Calendar · Gmail SMTP or Resend email · Render hosting
 
@@ -37,7 +37,7 @@ Calendly-style booking site for private tennis lessons and group sessions at St 
 
 ### 1. Supabase
 1. Create a project at supabase.com (region: closest to SA, e.g. Frankfurt or Cape Town if offered).
-2. **SQL Editor → New query** → paste all of `supabase/migrations/0001_init.sql` → **Run**.
+2. **SQL Editor → New query** → paste each file in `supabase/migrations/` in order (`0001_init.sql`, then `0002_venue_name.sql`) → **Run**.
 3. **Authentication → URL Configuration**
    - Site URL: your live URL (e.g. `https://full-swing-tennis.onrender.com`)
    - Redirect URLs: add `https://YOUR-DOMAIN/auth/callback` and `http://localhost:3000/auth/callback`
@@ -115,7 +115,7 @@ npm test                     # slot-calculation tests
 ## Project layout
 
 ```
-supabase/migrations/0001_init.sql   database schema, RLS, functions, starter data
+supabase/migrations/                database schema, RLS, functions, starter data (run in order)
 src/lib/slots.ts                    pure availability/slot maths (unit tested)
 src/lib/data.ts                     busy times (bookings, sessions, blocked, Google) + slot queries
 src/lib/bookings.ts                 create / confirm / cancel / refund logic

@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&family=Archivo:wght@400;500;700;800;900&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -63,6 +63,10 @@ body {
   .container-x {
     @apply mx-auto w-full max-w-6xl px-4 sm:px-6;
   }
+  /* Header and home hero run a little wider than page content. */
+  .container-wide {
+    @apply mx-auto w-full max-w-[84rem] px-4 sm:px-6 lg:px-12;
+  }
   /* Custom-drawn native checkbox: keeps form posting, keyboard and validation. */
   .checkbox {
     @apply h-5 w-5 shrink-0 cursor-pointer appearance-none rounded-md border border-slate-300 bg-white bg-center bg-no-repeat shadow-sm transition
@@ -92,6 +96,6 @@ body {
     @apply absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/70 to-transparent;
   }
   .nav-link {
-    @apply rounded-full px-3.5 py-2 text-slate-600 transition hover:bg-slate-100 hover:text-ink;
+    @apply rounded-full px-3.5 py-2 text-[#344B62] transition hover:bg-slate-100 hover:text-ink;
   }
 }

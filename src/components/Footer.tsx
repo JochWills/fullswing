@@ -11,14 +11,14 @@ export default async function Footer() {
     <footer className="mt-24 bg-ink text-slate-400">
       <div className="container-x grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr]">
         <div>
-          <Link href="/" className="inline-block rounded-2xl bg-white px-5 py-4 shadow-lift" aria-label="Full-Swing Tennis Academy home">
-            <Logo className="h-24 w-auto" />
+          <Link href="/" className="inline-block rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand" aria-label="Full-Swing Tennis Academy home">
+            <Logo variant="white" className="h-14 w-auto" />
           </Link>
           <p className="mt-5 max-w-xs text-sm">Private coaching and group sessions for juniors and adults in St Francis Bay.</p>
         </div>
         <div className="text-sm">
           <p className="mb-3 text-xs font-bold uppercase tracking-[0.16em] text-white">Where</p>
-          <p className="text-slate-300">{s?.venue_name ?? "St Francis Bay Tennis Court"}</p>
+          <p className="text-slate-300">{s?.venue_name ?? "St Francis Bay Tennis Club"}</p>
           <p>{s?.venue_address}</p>
           {(s?.contact_email || s?.contact_phone) && (
             <div className="mt-4 flex flex-col gap-1">

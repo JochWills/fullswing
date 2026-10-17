@@ -3,8 +3,8 @@ import { Bone, CardSkeleton } from "@/components/ui/Skeleton";
 export default function HomeLoading() {
   return (
     <>
-      <section className="bg-gradient-to-b from-brand-50 via-white to-slate-50">
-        <div className="container-x grid items-center gap-12 pb-20 pt-12 sm:pt-16 lg:grid-cols-[1.1fr_1fr] lg:gap-16 lg:pb-28 lg:pt-20">
+      <section className="bg-[linear-gradient(180deg,#EEF8FE_0%,#F7FBFE_55%,#F8FAFC_100%)]">
+        <div className="container-wide grid items-center gap-10 pb-12 pt-10 sm:pt-14 lg:min-h-[640px] lg:grid-cols-[1.08fr_1fr] lg:gap-8 lg:pb-16 lg:pt-[72px]">
           <div>
             <Bone className="h-8 w-56 rounded-full" />
             <Bone className="mt-6 h-16 w-80 max-w-full sm:h-20" />
@@ -16,10 +16,10 @@ export default function HomeLoading() {
               <Bone className="h-14 w-full rounded-full sm:w-56" />
             </div>
           </div>
-          <div className="skeleton mx-auto aspect-[5/4] w-full max-w-md rounded-[2.5rem] lg:max-w-none" />
+          <div className="skeleton mx-auto aspect-square w-full max-w-[30rem] rounded-[1.9rem] lg:ml-auto lg:mr-0" />
         </div>
       </section>
-      <section className="container-x">
+      <section className="container-wide">
         <Bone className="h-3 w-32" />
         <Bone className="mb-8 mt-4 h-12 w-72" />
         <div className="grid gap-6 md:grid-cols-2">

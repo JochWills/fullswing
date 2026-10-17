@@ -51,7 +51,7 @@ function layout(title: string, body: string) {
 <table width="100%" cellpadding="0" cellspacing="0" style="padding:24px 12px"><tr><td align="center">
 <table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#fff;border-radius:12px;overflow:hidden">
 <tr><td style="background:#0b0d0f;padding:20px 24px;border-bottom:4px solid #22A8E0">
-<img src="${siteUrl()}/logo-white.png" alt="Full-Swing Tennis Academy" height="48" style="display:block;height:48px">
+<img src="${siteUrl()}/logo-full-white.png" alt="Full-Swing Tennis Academy" height="44" style="display:block;height:44px;width:auto">
 </td></tr>
 <tr><td style="padding:28px 24px">
 <h1 style="margin:0 0 16px;font-size:22px">${title}</h1>
