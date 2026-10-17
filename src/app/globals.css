@@ -1,0 +1,97 @@
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  @apply bg-slate-50 text-ink font-sans antialiased;
+}
+
+::selection {
+  @apply bg-brand-200 text-ink;
+}
+
+@layer components {
+  .h-display {
+    @apply font-display font-extrabold uppercase tracking-tight leading-[0.95];
+  }
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-brand-600;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 font-semibold transition duration-200
+      disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2;
+  }
+  .btn-primary {
+    @apply btn bg-brand text-white shadow-glow hover:-translate-y-px hover:bg-brand-600 disabled:translate-y-0;
+  }
+  .btn-dark {
+    @apply btn bg-ink text-white hover:bg-ink-700;
+  }
+  .btn-ghost {
+    @apply btn border border-slate-300 bg-white text-ink hover:border-ink;
+  }
+  .btn-danger {
+    @apply btn bg-red-600 text-white hover:bg-red-700;
+  }
+  .btn-sm {
+    @apply px-4 py-2 text-sm;
+  }
+  .btn-lg {
+    @apply px-8 py-4 text-lg;
+  }
+  .card {
+    @apply rounded-3xl border border-slate-200/80 bg-white shadow-soft;
+  }
+  .card-hover {
+    @apply transition duration-200 hover:-translate-y-1 hover:border-brand-200 hover:shadow-lift;
+  }
+  .label {
+    @apply mb-1.5 block text-sm font-semibold text-slate-700;
+  }
+  .input {
+    @apply w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-ink shadow-sm placeholder:text-slate-400
+      focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/15;
+  }
+  .badge {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold;
+  }
+  .container-x {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6;
+  }
+  /* Custom-drawn native checkbox: keeps form posting, keyboard and validation. */
+  .checkbox {
+    @apply h-5 w-5 shrink-0 cursor-pointer appearance-none rounded-md border border-slate-300 bg-white bg-center bg-no-repeat shadow-sm transition
+      checked:border-brand checked:bg-brand hover:border-brand focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand/20;
+    background-size: 0.8rem;
+  }
+  .checkbox:checked {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5 9-10'/%3E%3C/svg%3E");
+  }
+  /* Toggle switch built on a checkbox; the knob is a radial gradient so no pseudo-elements are needed. */
+  .switch {
+    @apply h-6 w-11 shrink-0 cursor-pointer appearance-none rounded-full bg-slate-300 bg-no-repeat transition-all duration-200
+      checked:bg-brand focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand/20;
+    background-image: radial-gradient(circle, #fff 0 8.5px, transparent 9.5px);
+    background-size: 24px 24px;
+    background-position: left center;
+  }
+  .switch:checked {
+    background-position: right center;
+  }
+  /* Shimmering placeholder used by loading skeletons */
+  .skeleton {
+    @apply relative overflow-hidden bg-slate-200/70;
+  }
+  .skeleton::after {
+    content: "";
+    @apply absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/70 to-transparent;
+  }
+  .nav-link {
+    @apply rounded-full px-3.5 py-2 text-slate-600 transition hover:bg-slate-100 hover:text-ink;
+  }
+}

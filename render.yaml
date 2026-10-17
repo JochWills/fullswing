@@ -1,0 +1,44 @@
+# Render Blueprint - New -> Blueprint -> connect this repo.
+# Fill in the env vars marked sync: false in the Render dashboard.
+#
+# Free plan: the web service sleeps after ~15 min without traffic, so point an uptime monitor
+# (e.g. UptimeRobot, every 5 min) at /api/health to keep it awake. Render cron jobs aren't free, so
+# reminders are triggered externally - see "Reminders" in the README (cron-job.org works on its free plan).
+services:
+  - type: web
+    name: full-swing-tennis
+    runtime: node
+    plan: free               # switch to "starter" for an always-on instance
+    region: frankfurt
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: NEXT_PUBLIC_SITE_URL
+        sync: false
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        sync: false
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: ADMIN_EMAILS
+        sync: false
+      - key: PAYSTACK_SECRET_KEY
+        sync: false
+      - key: PAYMENTS_TEST_MODE   # "true" until Paystack is set up, then "false"
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: EMAIL_FROM
+        sync: false
+      - key: ADMIN_NOTIFY_EMAIL
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: CRON_SECRET
+        generateValue: true
