@@ -51,6 +51,13 @@ export default async function ManageBookingPage({
         </p>
       )}
 
+      {b.status === "confirmed" && upcoming && b.rescheduled_from && (
+        <p className="mt-3 rounded-xl border border-brand-200 bg-brand-50 p-3 text-brand-900">
+          This {b.kind === "group" ? "session" : "lesson"} was moved by your coach from {fmtDate(b.rescheduled_from, "EEE d MMM")} at {fmtTime(b.rescheduled_from)}.
+          If the new time doesn&apos;t suit you, you can cancel below for a full refund any time before it starts.
+        </p>
+      )}
+
       <div className="card mt-8 overflow-hidden">
         <div className="relative flex items-start justify-between gap-3 overflow-hidden bg-ink p-6 text-white">
           <CourtLines className="pointer-events-none absolute -right-20 -top-12 w-80 text-white/10" strokeWidth={5} />

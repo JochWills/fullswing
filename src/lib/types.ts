@@ -79,6 +79,8 @@ export type Booking = {
   cancelled_by: "client" | "admin" | "system" | null;
   google_event_id: string | null;
   reminder_sent_at: string | null;
+  rescheduled_at: string | null;
+  rescheduled_from: string | null;
   manage_token: string;
   created_at: string;
 };

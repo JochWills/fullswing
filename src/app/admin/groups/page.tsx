@@ -9,13 +9,14 @@ import Select from "@/components/ui/Select";
 import DatePicker from "@/components/ui/DatePicker";
 import TimePicker from "@/components/ui/TimePicker";
 import NumberField from "@/components/ui/NumberField";
-import { cancelGroupSession, createGroupSession, deleteGroupSession, updateGroupSession } from "../actions";
+import RescheduleForm from "@/components/admin/RescheduleForm";
+import { cancelGroupSession, createGroupSession, deleteGroupSession, moveGroupSession, updateGroupSession } from "../actions";
 import type { Booking, GroupSession } from "@/lib/types";
 
 export default async function AdminGroups({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; saved?: string; updated?: string; past?: string }>;
+  searchParams: Promise<{ error?: string; saved?: string; updated?: string; moved?: string; past?: string }>;
 }) {
   const sp = await searchParams;
   const past = sp.past === "1";
@@ -39,7 +40,11 @@ export default async function AdminGroups({
       <div className="lg:col-span-2">
         <Flash
           error={sp.error}
-          success={sp.saved ? `${sp.saved} session${sp.saved === "1" ? "" : "s"} created.` : sp.updated && "Session updated."}
+          success={
+            sp.saved ? `${sp.saved} session${sp.saved === "1" ? "" : "s"} created.`
+            : sp.moved ? `Session moved.${sp.moved !== "0" ? ` ${sp.moved} booking${sp.moved === "1" ? "" : "s"} emailed the new time.` : ""}`
+            : sp.updated && "Session updated."
+          }
         />
       </div>
 
@@ -82,8 +87,17 @@ export default async function AdminGroups({
 
                 {!past && (
                   <details className="border-t border-slate-100">
-                    <summary className="cursor-pointer px-4 py-2 text-sm font-semibold text-brand-600">Edit / cancel</summary>
+                    <summary className="cursor-pointer px-4 py-2 text-sm font-semibold text-brand-600">Edit / reschedule / cancel</summary>
                     <div className="space-y-4 p-4 pt-0">
+                      <RescheduleForm
+                        action={moveGroupSession}
+                        id={s.id}
+                        kind="group"
+                        who={list.length ? `Everyone booked (${list.length} booking${list.length === 1 ? "" : "s"})` : ""}
+                        defaultDate={fmtDate(s.starts_at, "yyyy-MM-dd")}
+                        defaultStart={fmtTime(s.starts_at)}
+                        defaultEnd={fmtTime(s.ends_at)}
+                      />
                       <form action={updateGroupSession} className="grid gap-3 sm:grid-cols-2">
                         <input type="hidden" name="id" value={s.id} />
                         <div className="sm:col-span-2"><label className="label">Title</label><input name="title" className="input" defaultValue={s.title} required /></div>
@@ -92,7 +106,6 @@ export default async function AdminGroups({
                         <div><label className="label">Capacity</label><NumberField name="capacity" min={Math.max(1, booked)} max={100} defaultValue={s.capacity} /></div>
                         <div><label className="label">Price (R)</label><NumberField name="price" min={0} step="0.01" buttonStep={10} prefix="R" defaultValue={s.price_cents / 100} /></div>
                         <div className="flex items-end"><SubmitButton className="btn-dark w-full">Save changes</SubmitButton></div>
-                        <p className="text-xs text-slate-500 sm:col-span-2">To change the date or time, cancel this session and create a new one.</p>
                       </form>
                       {list.length ? (
                         <form action={cancelGroupSession} className="flex flex-wrap items-center gap-3 rounded-lg bg-red-50 p-3">

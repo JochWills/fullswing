@@ -153,6 +153,27 @@ export async function createEvent(ev: {
   }
 }
 
+/** Moves an existing event to a new time. */
+export async function moveEvent(eventId: string | null | undefined, start: string, end: string): Promise<void> {
+  if (!eventId) return;
+  try {
+    const token = await accessToken();
+    if (!token) return;
+    const id = await calendarId();
+    const res = await fetch(
+      `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(id)}/events/${encodeURIComponent(eventId)}`,
+      {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ start: { dateTime: start, timeZone: TZ }, end: { dateTime: end, timeZone: TZ } }),
+      },
+    );
+    if (!res.ok) console.error("Google move event failed", await res.text());
+  } catch (e) {
+    console.error("Google move event error", e);
+  }
+}
+
 export async function deleteEvent(eventId: string | null | undefined): Promise<void> {
   if (!eventId) return;
   try {

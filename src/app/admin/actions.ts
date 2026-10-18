@@ -7,7 +7,7 @@ import { fromZonedTime } from "date-fns-tz";
 import { requireAdmin } from "@/lib/auth";
 import { db } from "@/lib/supabase/admin";
 import { TZ } from "@/lib/env";
-import { cancelBooking } from "@/lib/bookings";
+import { cancelBooking, rescheduleBooking, rescheduleGroupSession } from "@/lib/bookings";
 import { createEvent, deleteEvent } from "@/lib/google";
 import { getSettings } from "@/lib/data";
 import type { Booking, GroupSession } from "@/lib/types";
@@ -229,6 +229,25 @@ export async function cancelGroupSession(f: FormData) {
   revalidateTag(TAGS.groups);
 }
 
+export async function moveGroupSession(f: FormData) {
+  await requireAdmin();
+  const date = str(f, "date");
+  const startTime = str(f, "start_time");
+  const endTime = str(f, "end_time");
+  if (!date || !startTime || !endTime) fail("/admin/groups", "Pick the new date and times.");
+  const { data } = await db().from("group_sessions").select("*").eq("id", str(f, "id")).single();
+  let emailed = 0;
+  try {
+    emailed = await rescheduleGroupSession(data as GroupSession, localToUtc(date, startTime), localToUtc(date, endTime), str(f, "note").slice(0, 500));
+  } catch (e) {
+    fail("/admin/groups", (e as Error).message);
+  }
+  revalidatePath("/admin", "layout");
+  revalidatePath("/groups");
+  revalidateTag(TAGS.groups);
+  redirect(`/admin/groups?moved=${emailed}`);
+}
+
 export async function deleteGroupSession(f: FormData) {
   await requireAdmin();
   const id = str(f, "id");
@@ -251,6 +270,22 @@ export async function adminCancelBooking(f: FormData) {
     fail("/admin/bookings", (e as Error).message);
   }
   revalidatePath("/admin", "layout");
+}
+
+export async function adminRescheduleBooking(f: FormData) {
+  await requireAdmin();
+  const date = str(f, "date");
+  const time = str(f, "time");
+  if (!date || !time) fail("/admin/bookings", "Pick the new date and time.");
+  const { data } = await db().from("bookings").select("*").eq("id", str(f, "id")).single();
+  const b = data as Booking;
+  try {
+    await rescheduleBooking(b, localToUtc(date, time), str(f, "note").slice(0, 500));
+  } catch (e) {
+    fail("/admin/bookings", (e as Error).message);
+  }
+  revalidatePath("/admin", "layout");
+  redirect(`/admin/bookings?moved=${encodeURIComponent(b.customer_name)}`);
 }
 
 export async function markRefundHandled(f: FormData) {

@@ -4,7 +4,8 @@ import { fmtDate, fmtTime, rand } from "@/lib/format";
 import StatusBadge from "@/components/StatusBadge";
 import ConfirmButton from "@/components/admin/ConfirmButton";
 import Flash from "@/components/admin/Flash";
-import { adminCancelBooking, markRefundHandled } from "../actions";
+import RescheduleForm from "@/components/admin/RescheduleForm";
+import { adminCancelBooking, adminRescheduleBooking, markRefundHandled } from "../actions";
 import type { Booking } from "@/lib/types";
 
 const TABS = [
@@ -14,7 +15,7 @@ const TABS = [
   ["all", "All"],
 ] as const;
 
-export default async function AdminBookings({ searchParams }: { searchParams: Promise<{ tab?: string; q?: string; error?: string }> }) {
+export default async function AdminBookings({ searchParams }: { searchParams: Promise<{ tab?: string; q?: string; error?: string; moved?: string }> }) {
   const sp = await searchParams;
   const tab = TABS.some(([k]) => k === sp.tab) ? sp.tab! : "upcoming";
   const now = new Date().toISOString();
@@ -33,7 +34,7 @@ export default async function AdminBookings({ searchParams }: { searchParams: Pr
 
   return (
     <div>
-      <Flash error={sp.error} />
+      <Flash error={sp.error} success={sp.moved && `${sp.moved}'s booking was moved and they've been emailed the new time.`} />
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div className="flex gap-1 rounded-lg bg-slate-200 p-1">
           {TABS.map(([k, label]) => (
@@ -73,6 +74,9 @@ export default async function AdminBookings({ searchParams }: { searchParams: Pr
                       {b.customer_phone && <> · <a className="underline" href={`tel:${b.customer_phone}`}>{b.customer_phone}</a></>}
                     </p>
                     {b.notes && <p className="mt-1 text-sm italic text-slate-500">“{b.notes}”</p>}
+                    {b.rescheduled_from && b.status === "confirmed" && (
+                      <p className="mt-1 text-xs font-semibold text-amber-700">Moved from {fmtDate(b.rescheduled_from, "EEE d MMM")} {fmtTime(b.rescheduled_from)}</p>
+                    )}
                   </div>
                   <div className="text-right">
                     <StatusBadge status={b.status} />
@@ -82,7 +86,21 @@ export default async function AdminBookings({ searchParams }: { searchParams: Pr
                   </div>
                 </div>
                 {b.status === "confirmed" && future && (
-                  <form action={adminCancelBooking} className="mt-3 flex flex-wrap items-center gap-3 border-t border-slate-100 pt-3">
+                  <div className="mt-3 flex flex-wrap items-center gap-3 border-t border-slate-100 pt-3">
+                  {b.kind === "private" ? (
+                    <RescheduleForm
+                      action={adminRescheduleBooking}
+                      id={b.id}
+                      kind="private"
+                      who={b.customer_name.split(" ")[0]}
+                      defaultDate={fmtDate(b.starts_at, "yyyy-MM-dd")}
+                      defaultStart={fmtTime(b.starts_at)}
+                      defaultEnd={fmtTime(b.ends_at)}
+                    />
+                  ) : (
+                    <Link href={`/admin/groups#${b.group_session_id}`} className="btn-ghost btn-sm">Reschedule session</Link>
+                  )}
+                  <form action={adminCancelBooking} className="flex flex-wrap items-center gap-3">
                     <input type="hidden" name="id" value={b.id} />
                     <label className="flex items-center gap-2 text-sm">
                       <input type="checkbox" name="refund" defaultChecked className="checkbox" /> Refund via Paystack
@@ -96,6 +114,7 @@ export default async function AdminBookings({ searchParams }: { searchParams: Pr
                       Cancel booking
                     </ConfirmButton>
                   </form>
+                  </div>
                 )}
                 {b.refund_status === "failed" && (
                   <form action={markRefundHandled} className="mt-3 flex items-center gap-3 border-t border-slate-100 pt-3 text-sm">

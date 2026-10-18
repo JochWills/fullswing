@@ -37,7 +37,7 @@ Calendly-style booking site for private tennis lessons and group sessions at St 
 
 ### 1. Supabase
 1. Create a project at supabase.com (region: closest to SA, e.g. Frankfurt or Cape Town if offered).
-2. **SQL Editor → New query** → paste each file in `supabase/migrations/` in order (`0001_init.sql`, then `0002_venue_name.sql`) → **Run**.
+2. **SQL Editor → New query** → paste each file in `supabase/migrations/` in order (`0001_init.sql`, `0002_venue_name.sql`, `0003_reschedule.sql`) → **Run**.
 3. **Authentication → URL Configuration**
    - Site URL: your live URL (e.g. `https://full-swing-tennis.onrender.com`)
    - Redirect URLs: add `https://YOUR-DOMAIN/auth/callback` and `http://localhost:3000/auth/callback`

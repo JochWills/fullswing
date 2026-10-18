@@ -125,6 +125,24 @@ ${button(`${siteUrl()}/book`, "Book another lesson")}`;
   }
 }
 
+export async function sendRescheduled(b: Booking, s: Settings, oldStart: string, oldEnd: string, note: string) {
+  const gcal = addToGoogleCalendarLink(
+    `Tennis: ${b.title}`,
+    b.starts_at,
+    b.ends_at,
+    `${s.venue_name}, ${s.venue_address}`,
+    `Manage your booking: ${manageLink(b)}`,
+  );
+  const body = `<p>Hi ${esc(b.customer_name.split(" ")[0])}, your ${b.kind === "group" ? "session" : "lesson"} has been moved to a new time.</p>
+${note ? `<p style="background:#f0f9ff;border-left:4px solid #22A8E0;padding:12px 14px;margin:0 0 16px">${esc(note)}</p>` : ""}
+<p style="color:#6b7280;margin:0">Was: <s>${fmtDate(oldStart, "EEE d MMM")} · ${fmtTime(oldStart)} – ${fmtTime(oldEnd)}</s></p>
+${detailsTable(b, s)}
+${button(manageLink(b), "View booking")}
+${button(gcal, "Add to Google Calendar", "#0b0d0f")}
+<p style="font-size:13px;color:#6b7280;margin-top:20px">If the new time doesn't suit you, you can cancel for a full refund any time before it starts using the link above.</p>`;
+  await send(b.customer_email, `Moved: ${b.title} – now ${fmtDate(b.starts_at, "EEE d MMM")} ${fmtTime(b.starts_at)}`, layout("Your booking has moved 📅", body));
+}
+
 export async function sendReminder(b: Booking, s: Settings) {
   const body = `<p>Hi ${esc(b.customer_name.split(" ")[0])}, a quick reminder about your tennis tomorrow.</p>
 ${detailsTable(b, s)}
